@@ -1,22 +1,13 @@
 import os
 import base64
 import io
-import easyocr
-import numpy as np
 from PIL import Image
-import cv2
+from groq import Groq
 from groq import Groq
 from dotenv import load_dotenv
 load_dotenv()
 CONFIDENCE_THRESHOLD = 0.75
-_easyocr_reader = None
 
-
-def _get_reader():
-    global _easyocr_reader
-    if _easyocr_reader is None:
-        _easyocr_reader = easyocr.Reader(['en'])
-    return _easyocr_reader
 
 
 def _image_to_base64(image_file) ->str:
@@ -59,32 +50,8 @@ CRITICAL RULES:
         return '', 0.0
 
 
-def _extract_via_easyocr(image_file) ->tuple[str, float]:
-    try:
-        if hasattr(image_file, 'seek'):
-            image_file.seek(0)
-        image = Image.open(image_file).convert('RGB')
-        image_np = np.array(image)
-        gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
-        blur = cv2.bilateralFilter(gray, 9, 75, 75)
-        _, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY | cv2.
-            THRESH_OTSU)
-        reader = _get_reader()
-        results = reader.readtext(thresh)
-        if not results:
-            return '', 0.0
-        texts = [t for _, t, _ in results]
-        probs = [p for _, _, p in results]
-        return ' '.join(texts).strip(), float(sum(probs) / len(probs))
-    except Exception as e:
-        return f'Error extracting text: {e}', 0.0
-
-
 def extract_text_from_image(image_file) ->tuple[str, float]:
-    text, conf = _extract_via_vision_llm(image_file)
-    if text:
-        return text, conf
-    return _extract_via_easyocr(image_file)
+    return _extract_via_vision_llm(image_file)
 
 
 def is_low_confidence(confidence: float) ->bool:
@@ -94,5 +61,4 @@ def is_low_confidence(confidence: float) ->bool:
 if __name__ == '__main__':
     print('OCR Tool ready.')
     print('Primary: Groq vision LLM (llama-3.2-11b-vision-preview)')
-    print('Fallback: EasyOCR + OpenCV')
     print('Confidence threshold:', CONFIDENCE_THRESHOLD)
