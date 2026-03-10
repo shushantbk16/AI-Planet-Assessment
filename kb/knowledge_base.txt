@@ -1,0 +1,65 @@
+--- Algebra ---
+Topic: Quadratic Equations
+Formula: The roots of a quadratic equation ax^2 + bx + c = 0 are given by x = (-b ± √(b^2 - 4ac)) / (2a).
+Condition: The discriminant D = b^2 - 4ac determines the nature of the roots. If D > 0, roots are real and distinct. If D = 0, roots are real and equal. If D < 0, roots are complex.
+
+Topic: Systems of Linear Equations
+Method: Substitution or Elimination. 
+Explanation: To solve, either isolate one variable and substitute it into the other equation, or multiply equations by constants so that adding/subtracting them eliminates a variable.
+
+--- Probability ---
+Topic: Basic Probability
+Definition: P(Event) = (Number of Favorable Outcomes) / (Total Number of Possible Outcomes).
+Rule: 0 ≤ P(E) ≤ 1. The sum of probabilities of all exhaustive mutually exclusive events is 1.
+
+Topic: Conditional Probability
+Formula: P(A | B) = P(A ∩ B) / P(B), provided P(B) > 0.
+Bayes' Theorem: P(A | B) = (P(B | A) * P(A)) / P(B). Use this when flipping the condition.
+
+Topic: Combinatorics
+Permutations (order matters): nPr = n! / (n - r)!
+Combinations (order doesn't matter): nCr = n! / (r! * (n - r)!)
+
+--- Calculus ---
+Topic: Limits
+Definition: The value a function approaches as the input approaches some value.
+L'Hopital's Rule: If lim(f(x)/g(x)) results in 0/0 or ∞/∞, then lim(f(x)/g(x)) = lim(f'(x)/g'(x)).
+
+Topic: Derivatives (Power Rule)
+Rule: If f(x) = x^n, then f'(x) = n * x^(n-1). This applies for any real number n.
+Constant Multiple Rule: If f(x) = c * g(x), then f'(x) = c * g'(x).
+
+Topic: Basic Optimization
+Method: To find local maxima or minima of a function, find the first derivative f'(x) and set it to 0 to find critical points. Then, use the second derivative test f''(x). If f''(x) > 0, it is a local minimum. If f''(x) < 0, it is a local maximum.
+
+--- Common Mistakes ---
+Mistake: Forgetting the +C
+Explanation: Always remember to add the constant of integration +C when evaluating indefinite integrals.
+
+Mistake: Dividing by Zero
+Explanation: Variables in the denominator must be checked. If dividing by a variable, explicitly state the condition that the variable cannot be zero.
+
+Mistake: Confusing Permutations and Combinations
+Explanation: If selecting a committee where roles (President, VP) exist, use Permutations. If selecting a group where everyone is equal, use Combinations.
+
+--- Algebra: Power Sums & Newton's Identities ---
+Topic: Newton's Power Sum Identities (for symmetric sums of 3 variables a, b, c)
+Use when: Given p1 = a+b+c, p2 = a²+b²+c², p3 = a³+b³+c³, find p4 = a⁴+b⁴+c⁴.
+
+Step 1: Find elementary symmetric polynomials (e1, e2, e3).
+  e1 = p1
+  e2 = (e1*p1 - p2) / 2
+  e3 = (e2*p1 - e1*p2 + p3) / 3
+
+Step 2: Compute p4 using Newton's recurrence:
+  p4 = e1*p3 - e2*p2 + e3*p1
+
+Example: p1=4, p2=10, p3=22
+  e1 = 4
+  e2 = (4*4 - 10) / 2 = 3
+  e3 = (3*4 - 4*10 + 22) / 3 = (12 - 40 + 22) / 3 = -6/3 = -2
+  p4 = 4*22 - 3*10 + (-2)*4 = 88 - 30 - 8 = 50
+
+--- Algebra: Key Identities ---
+Identity: (a+b+c)² = a²+b²+c² + 2(ab+bc+ca)
+Identity: a³+b³+c³ - 3abc = (a+b+c)(a²+b²+c² - ab-bc-ca)
