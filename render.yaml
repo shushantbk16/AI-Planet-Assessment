@@ -1,7 +1,11 @@
 services:
   - type: web
     name: math-mentor
-    env: docker
+    env: python
+    buildCommand: "pip install setuptools wheel && pip install --only-binary=:all: python-bidi==0.6.7 || true && pip install -r requirements.txt"
+    startCommand: "streamlit run app.py --server.port $PORT"
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.13
       - key: GROQ_API_KEY
         sync: false
