@@ -2,7 +2,7 @@ services:
   - type: web
     name: math-mentor
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install setuptools wheel && pip install --only-binary=:all: python-bidi==0.4.2 || true && pip install -r requirements.txt"
     startCommand: "streamlit run app.py --server.port $PORT"
     envVars:
       - key: PYTHON_VERSION
