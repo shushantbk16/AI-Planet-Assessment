@@ -6,32 +6,32 @@
 
 ```mermaid
 flowchart TD
-    A[User Input\nText / Image / Audio] --> B{Input Mode}
-    B -->|Image| C[OCR Tool\nGroq Vision + OpenCV\nReturns text + confidence]
-    B -->|Audio| D[ASR Tool\nFaster-Whisper (st.audio_input)\nMath-phrase normalization]
-    B -->|Text| E[Direct Input]
+    A["User Input<br>Text / Image / Audio"] --> B{"Input Mode"}
+    B -->|"Image"| C["OCR Tool<br>Groq Vision<br>Returns text + confidence"]
+    B -->|"Audio"| D["ASR Tool<br>Faster-Whisper<br>Math-phrase normalization"]
+    B -->|"Text"| E["Direct Input"]
 
-    C -->|Low confidence| F[🙋 HITL — User edits text]
-    D -->|Unclear transcript| F
-    C -->|High confidence| G[Parser Agent]
-    D -->|Clear| G
+    C -->|"Low confidence"| F["🙋 HITL — User edits text"]
+    D -->|"Unclear transcript"| F
+    C -->|"High confidence"| G["Parser Agent"]
+    D -->|"Clear"| G
     E --> G
     F --> G
 
-    G[Parser Agent\nLLaMA-3.3-70B\nStructured JSON output] -->|needs_clarification=true| F
-    G --> H[Intent Router Agent\nClassifies topic + strategy]
+    G["Parser Agent<br>LLaMA-3.3-70B<br>Structured JSON output"] -->|"needs_clarification=true"| F
+    G --> H["Intent Router Agent<br>Classifies topic + strategy"]
 
-    H --> I[Solver Agent\nRAG retrieval from FAISS\n+ Past Verified Memory\n+ Python calculator tool]
-    I --> J[Verifier Agent\nChecks correctness]
-    J -->|CORRECT| K[Explainer Agent\nStudent-friendly steps]
-    J -->|INCORRECT + retry < 2| I
-    J -->|INCORRECT + retry ≥ 2| F
+    H --> I["Solver Agent<br>RAG retrieval from FAISS<br>+ Past Verified Memory<br>+ Python calculator tool"]
+    I --> J["Verifier Agent<br>Checks correctness"]
+    J -->|"CORRECT"| K["Explainer Agent<br>Student-friendly steps"]
+    J -->|"INCORRECT + retry &lt; 2"| I
+    J -->|"INCORRECT + retry &ge; 2"| F
 
-    K --> L[Results Panel\nConfidence • RAG context • Trace • Explanation]
-    L --> M[Memory Store\nJSON — saves attempt + feedback]
-    L --> N[Feedback Buttons\n✅ Correct / ❌ Incorrect + Re-Check]
+    K --> L["Results Panel<br>Confidence • RAG context • Trace • Explanation"]
+    L --> M["Memory Store<br>JSON — saves attempt + feedback"]
+    L --> N["Feedback Buttons<br>✅ Correct / ❌ Incorrect + Re-Check"]
     N --> M
-    M -->|Similar problems| I
+    M -->|"Similar problems"| I
 ```
 
 ## Tech Stack
