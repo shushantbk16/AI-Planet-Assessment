@@ -1,7 +1,10 @@
 from faster_whisper import WhisperModel
 import re
-model_size = 'base'
-model = WhisperModel(model_size, device='cpu', compute_type='int8')
+import gc
+
+model_size = 'tiny'
+# We will NOT initialize the model globally here.
+# model = WhisperModel(model_size, device='cpu', compute_type='int8')
 MATH_PHRASE_MAP = [('\\braised to the power of\\b', '^'), (
     '\\braised to the power\\b', '^'), ('\\braised to\\b', '^'), (
     '\\bto the power of\\b', '^'), ('\\bsquared\\b', '^2'), ('\\bcubed\\b',
@@ -22,7 +25,10 @@ def normalize_math_phrases(text: str) ->str:
 
 
 def transcribe_audio(audio_file_path: str):
+    model = None
     try:
+        # Lazy load to avoid OOM on startup
+        model = WhisperModel(model_size, device='cpu', compute_type='int8')
         segments, info = model.transcribe(audio_file_path, beam_size=5)
         segment_list = list(segments)
         if not segment_list:
@@ -35,6 +41,11 @@ def transcribe_audio(audio_file_path: str):
         return normalized, is_unclear
     except Exception as e:
         return f'Error transcribing audio: {str(e)}', True
+    finally:
+        # Force garbage collection to free the ~150MB RAM immediately
+        if model:
+            del model
+        gc.collect()
 
 
 if __name__ == '__main__':

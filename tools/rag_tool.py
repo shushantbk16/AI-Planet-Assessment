@@ -3,15 +3,22 @@ from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
+import gc
+
 KB_FILE_PATH = 'kb/knowledge_base.txt'
 VECTOR_STORE_PATH = 'faiss_index'
-embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
+# Disable global embedding initialization to prevent OOM
+# embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
 
 
 def build_vector_store():
     if not os.path.exists(KB_FILE_PATH):
         print(f'Knowledge base file not found at: {KB_FILE_PATH}')
         return None
+        
+    # Lazy load embeddings
+    embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
+    
     loader = TextLoader(KB_FILE_PATH)
     docs = loader.load()
     splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
@@ -21,6 +28,9 @@ def build_vector_store():
     print(
         f"Vector store built with {len(chunks)} chunks and saved to '{VECTOR_STORE_PATH}'."
         )
+    
+    del embeddings
+    gc.collect()
     return vectorstore
 
 
@@ -29,8 +39,11 @@ def get_retriever():
         print('No vector store found - building for the first time...')
         vectorstore = build_vector_store()
     else:
+        # Lazy load embeddings
+        embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
         vectorstore = FAISS.load_local(VECTOR_STORE_PATH, embeddings,
             allow_dangerous_deserialization=True)
+        # We don't delete embeddings here because the retriever might hold a reference to it
     if not vectorstore:
         return None
     return vectorstore.as_retriever(search_kwargs={'k': 3})
